@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Losos</title>
+<meta name="description" content="Losos. Wkrótce.">
+<meta name="theme-color" content="#141416">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-17.2 -4 15.2 8'%3E%3Cg fill='none' stroke='%23F7785C' stroke-width='0.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='-13.68,0 -10.62,-3.06 -5.86,-3.06 -2.8,0 -5.86,3.06 -10.62,3.06'/%3E%3Cpolygon points='-13.68,0 -16.4,-2.38 -16.4,2.38'/%3E%3Cpolyline points='-9.26,-2.04 -10.28,2.04'/%3E%3Cpolyline points='-7.56,-2.04 -8.58,2.04'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+/* Wersja „tajemnicza”: czarny ekran, logo rysuje się jak ścieżka na płytce (jak COMING SOON w filmiku), potem
+   schodzi pod kadr jako podpis, a filmik wyłania się z ciemności na cały ekran. Żadnego innego tekstu.
+   Tylko ciemny motyw — krawędzie filmiku są w Czerni i muszą zlewać się z tłem. Kolory: docs/brand/kolory.md. */
+:root {
+  color-scheme: dark;
+  --czern: #141416;
+  --losos: #F7785C;
+  --glow: rgba(247, 120, 92, 0.75);
+  --t-draw: 1.7s;        /* rysowanie logo */
+  --t-move: 1.3s;        /* zejście logo i wejście filmiku */
+}
+html, body { height: 100%; margin: 0; background: var(--czern); overflow: hidden; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* filmik: cały ekran bez kadrowania (krawędzie zlewają się z tłem); na pionowym ekranie powiększony, żeby rząd
+   modułów i napis nie były malutkie */
+.stage { position: fixed; inset: 0; opacity: 0; transition: opacity var(--t-move) ease; }
+.stage.on { opacity: 1; }
+.stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--czern); }
+@media (orientation: portrait) {
+  .stage video { width: 150%; left: -25%; }
+}
+
+/* logo: najpierw duże na środku, potem podpis pod kadrem */
+.logo {
+  position: fixed; left: 50%; top: 50%; width: min(64vw, 520px); color: var(--losos);
+  transform: translate(-50%, -50%);
+  transition: top var(--t-move) cubic-bezier(.65, 0, .35, 1), width var(--t-move) cubic-bezier(.65, 0, .35, 1),
+              transform var(--t-move) cubic-bezier(.65, 0, .35, 1), opacity var(--t-move) ease;
+}
+.logo svg { display: block; width: 100%; height: auto; overflow: visible; }
+.logo.docked { top: calc(100% - 30px - env(safe-area-inset-bottom, 0px)); width: 112px; transform: translate(-50%, -100%); opacity: 0.9; }
+@media (orientation: portrait) {
+  .logo.docked { top: calc(50% + 42.2vw + 56px); }    /* tuż pod kadrem: 150vw × 9/16 / 2 = 42,2vw */
+}
+</style>
+</head>
+<body>
+<h1 class="sr">Losos</h1>
+
+<div class="stage" id="stage">
+  <video id="promo" autoplay muted loop playsinline preload="auto" poster="media/losos-promo-poster.jpg"
+         aria-label="Losos R4">
+    <source src="media/losos-promo.webm" type="video/webm">
+    <source src="media/losos-promo.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="logo" id="logo" aria-hidden="true">
+  <svg viewBox="-17.4 -4.56 34.8 9.12"><g fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="-13.68,0 -10.62,-3.06 -5.86,-3.06 -2.8,0 -5.86,3.06 -10.62,3.06"/>
+    <polygon points="-13.68,0 -16.4,-2.38 -16.4,2.38"/>
+    <polyline points="-9.26,-2.04 -10.28,2.04"/>
+    <polyline points="-7.56,-2.04 -8.58,2.04"/>
+    <circle cx="-5.01" cy="-0.68" r="0.8"/>
+    <polyline points="-0.6,-3.6 -0.6,1 0.4,2"/>
+    <polygon points="2.4,-2 3.4,-2 4.4,-1 4.4,1 3.4,2 2.4,2 1.4,1 1.4,-1"/>
+    <polyline points="8.4,-2 6.4,-2 5.4,-1 6.4,0 7.4,0 8.4,1 7.4,2 5.4,2"/>
+    <polygon points="10.4,-2 11.4,-2 12.4,-1 12.4,1 11.4,2 10.4,2 9.4,1 9.4,-1"/>
+    <polyline points="16.4,-2 14.4,-2 13.4,-1 14.4,0 15.4,0 16.4,1 15.4,2 13.4,2"/>
+  </g></svg>
+</div>
+
+<noscript><style>.stage { opacity: 1; } .logo { top: calc(100% - 30px); width: 112px; transform: translate(-50%, -100%); }</style></noscript>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage'), logo = document.getElementById('logo'), v = document.getElementById('promo');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var svg = logo.querySelector('svg'), parts = Array.prototype.slice.call(svg.querySelectorAll('polygon, polyline, circle'));
+
+  function reveal() {
+    logo.classList.add('docked');
+    setTimeout(function () {                          // filmik dopiero, gdy logo zjedzie z kadru
+      stage.classList.add('on');
+      try { v.currentTime = 0; } catch (e) {}
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    }, 400);
+  }
+
+  if (reduce || !svg.animate) {                      // bez animacji: od razu podpis i plakat (ruch na żądanie)
+    v.removeAttribute('autoplay'); v.pause(); v.controls = !!reduce;
+    logo.classList.add('docked'); stage.classList.add('on');
+    if (!reduce) { var q = v.play(); if (q && q.catch) q.catch(function () {}); }
+    return;
+  }
+
+  v.pause();                                          // filmik startuje dopiero po narysowaniu logo
+  var draw = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--t-draw')) * 1000;
+  var step = draw / (parts.length + 3);
+  parts.forEach(function (el, i) {                    // kreska po kresce, jak prowadzona ścieżka
+    var len = el.getTotalLength();
+    el.style.strokeDasharray = len;
+    el.style.strokeDashoffset = len;
+    el.style.opacity = 0;
+    el.animate([{ strokeDashoffset: len, opacity: 1 }, { strokeDashoffset: 0, opacity: 1 }],
+               { duration: step * 4, delay: 250 + i * step, easing: 'cubic-bezier(.5, 0, .2, 1)', fill: 'forwards' });
+  });
+  var glow = getComputedStyle(document.documentElement).getPropertyValue('--glow').trim();
+  svg.animate([{ filter: 'drop-shadow(0 0 0 transparent)' },
+               { filter: 'drop-shadow(0 0 6px ' + glow + ') drop-shadow(0 0 18px ' + glow + ')', offset: 0.7 },
+               { filter: 'drop-shadow(0 0 2px ' + glow + ')' }],
+              { duration: draw + 900, delay: 250, easing: 'ease-out', fill: 'forwards' });
+  setTimeout(reveal, 250 + draw + 650);
+})();
+</script>
+</body>
+</html>

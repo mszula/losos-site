@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Losos</title>
+<meta name="description" content="Losos R2 i R4 — moduły przekaźnikowe 6 A na szynę DIN, zgodne z Loxone Tree. Wkrótce w sprzedaży.">
+<meta name="theme-color" content="#141416">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-17.2 -4 15.2 8'%3E%3Cg fill='none' stroke='%23F7785C' stroke-width='0.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='-13.68,0 -10.62,-3.06 -5.86,-3.06 -2.8,0 -5.86,3.06 -10.62,3.06'/%3E%3Cpolygon points='-13.68,0 -16.4,-2.38 -16.4,2.38'/%3E%3Cpolyline points='-9.26,-2.04 -10.28,2.04'/%3E%3Cpolyline points='-7.56,-2.04 -8.58,2.04'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+/* Układ: jedna kolumna jak front modułu — filmik w osi strony, pod nim karty modeli narysowane jak nos obudowy
+   (model w Łososiu, diody, opisy zacisków z graweru), cechy w siatce specyfikacji, kadry z renderu.
+   Tylko ciemny motyw: krawędzie filmiku i kadrów są w Czerni, muszą zlewać się z tłem strony.
+   Kolory: docs/brand/kolory.md. */
+:root {
+  color-scheme: dark;
+  --czern: #141416;      /* tło strony = krawędź kadru filmiku */
+  --grafit: #26262A;     /* powierzchnie: front modułu w kartach */
+  --linia: #303036;      /* linie podziału */
+  --szary: #9A9AA1;      /* opisy, etykiety, grawer zacisków */
+  --kosc: #F7F3EF;       /* tekst */
+  --losos: #F7785C;      /* marka: logo, nazwa modelu, wybrany język */
+  --ok: #2BA37A;         /* dioda statusu */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.75rem;
+  --step-3: clamp(2rem, 1.3rem + 2.9vw, 3.25rem);
+}
+* { box-sizing: border-box; }
+html { background: var(--czern); }
+body {
+  margin: 0; background: var(--czern); color: var(--kosc);
+  font: var(--step-0)/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+img, video { display: block; max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--losos); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 1120px; margin-inline: auto; padding-inline: 20px; }
+.label {
+  font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--szary);
+}
+
+/* nagłówek */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px 8px; }
+.brand { color: var(--losos); display: inline-flex; }
+.brand svg { height: 28px; width: auto; }
+.lang { display: inline-flex; gap: 4px; }
+.lang button {
+  font: 500 var(--step--1)/1 var(--font-mono); letter-spacing: 0.08em; color: var(--szary);
+  background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 6px 6px; cursor: pointer;
+}
+.lang button:hover { color: var(--kosc); }
+.lang button[aria-pressed="true"] { color: var(--kosc); border-bottom-color: var(--losos); }
+
+/* hero: filmik + teza */
+.hero { display: grid; gap: 28px; padding-block: 8px 72px; }
+.hero video { width: 100%; aspect-ratio: 16 / 9; background: var(--czern); }
+.thesis { display: grid; gap: 14px; max-width: 46rem; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1 { font-size: var(--step-3); line-height: 1.08; font-weight: 650; letter-spacing: -0.022em; }
+.lead { margin: 0; font-size: var(--step-1); line-height: 1.5; color: var(--szary); max-width: 40rem; }
+
+section + section { border-top: 1px solid var(--linia); }
+.block { display: grid; gap: 32px; padding-block: 64px; }
+h2 { font-size: var(--step-2); line-height: 1.15; font-weight: 600; letter-spacing: -0.012em; }
+
+/* modele: front modułu + specyfikacja */
+.models { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; }
+.model { display: grid; grid-template-rows: auto 1fr; gap: 20px; min-width: 0; }
+.front {
+  position: relative; aspect-ratio: 16 / 9; background: var(--grafit); border-radius: 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  padding: 14px 18px; display: grid; grid-template-rows: auto 1fr auto;
+}
+.front .engr { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.32em; color: #6E6E76; }
+.front .name {
+  position: absolute; top: 34px; right: 22px; font-weight: 700; font-size: 1.6rem; letter-spacing: 0.01em;
+  color: var(--losos);
+}
+.front .logo { align-self: end; color: var(--losos); }
+.front .logo svg { height: 22px; width: auto; }
+.front .led {
+  position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--ok);
+  box-shadow: 0 0 10px 2px rgba(43, 163, 122, 0.55);
+}
+.front .led.a { right: 30%; top: 40%; }
+.front .led.b { left: 30%; top: 58%; }
+.spec { margin: 0; display: grid; grid-template-columns: auto 1fr; }
+.spec dt, .spec dd { margin: 0; padding-block: 9px; border-bottom: 1px solid var(--linia); }
+.spec dt { color: var(--szary); padding-right: 16px; }
+.spec dd { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* w środku: kadr + opis */
+.inside { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 32px; align-items: center; }
+.inside figure { margin: 0; min-width: 0; }
+.inside .text { display: grid; gap: 14px; min-width: 0; }
+.inside p { margin: 0; color: var(--szary); max-width: 34rem; }
+
+/* cechy */
+.features { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 0 32px; }
+.feature { padding-block: 18px 22px; border-top: 1px solid var(--linia); min-width: 0; }
+.feature dt { font-weight: 600; margin-bottom: 6px; }
+.feature dd { margin: 0; color: var(--szary); }
+
+.rail { margin: 0; display: grid; gap: 12px; }
+.rail figcaption { color: var(--szary); font-size: var(--step--1); }
+
+footer { border-top: 1px solid var(--linia); padding-block: 32px 48px; color: var(--szary); font-size: var(--step--1); }
+footer .wrap { display: grid; gap: 10px; }
+footer p { margin: 0; max-width: 46rem; }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="#" aria-label="Losos">
+    <svg viewBox="-17.4 -4.56 34.8 9.12" role="img" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.55" stroke-linecap="round" stroke-linejoin="round"><polygon points="-13.68,0 -10.62,-3.06 -5.86,-3.06 -2.8,0 -5.86,3.06 -10.62,3.06"/><polygon points="-13.68,0 -16.4,-2.38 -16.4,2.38"/><polyline points="-9.26,-2.04 -10.28,2.04"/><polyline points="-7.56,-2.04 -8.58,2.04"/><circle cx="-5.01" cy="-0.68" r="0.8"/><polygon points="2.4,-2 3.4,-2 4.4,-1 4.4,1 3.4,2 2.4,2 1.4,1 1.4,-1"/><polygon points="10.4,-2 11.4,-2 12.4,-1 12.4,1 11.4,2 10.4,2 9.4,1 9.4,-1"/><polyline points="-0.6,-3.6 -0.6,1 0.4,2"/><polyline points="8.4,-2 6.4,-2 5.4,-1 6.4,0 7.4,0 8.4,1 7.4,2 5.4,2"/><polyline points="16.4,-2 14.4,-2 13.4,-1 14.4,0 15.4,0 16.4,1 15.4,2 13.4,2"/></g></svg>
+  </a>
+  <div class="lang" role="group" aria-label="Język / Language">
+    <button type="button" id="lang-pl" data-lang="pl" aria-pressed="true">PL</button>
+    <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <video id="promo" autoplay muted loop playsinline preload="metadata" poster="media/losos-promo-poster.jpg"
+           aria-label="Losos R4: montaż płytek, wpięcie na szynę DIN i sterowanie żarówkami" data-i18n-aria="video">
+      <source src="media/losos-promo.webm" type="video/webm">
+      <source src="media/losos-promo.mp4" type="video/mp4">
+    </video>
+    <div class="thesis">
+      <p class="label" data-i18n="eyebrow">Wkrótce w sprzedaży</p>
+      <h1 data-i18n="h1">Moduły przekaźnikowe na szynę DIN, zgodne z Loxone Tree</h1>
+      <p class="lead" data-i18n="lead">Losos R2 i R4 to wyjścia przekaźnikowe 6 A w obudowie szerokiej na dwa moduły. Wpinasz moduł na szynę, łączysz przewodem z magistralą Tree, a w Loxone Config pojawia się jak każde urządzenie Tree.</p>
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="models-h">
+    <h2 id="models-h" data-i18n="models_h">Dwa modele, ta sama obudowa</h2>
+    <div class="models">
+      <article class="model" aria-labelledby="r2-h">
+        <div class="front" aria-hidden="true">
+          <span class="engr">L H G +</span>
+          <span class="name">R2</span>
+          <span class="led a"></span>
+          <span class="logo"><svg viewBox="-17.4 -4.56 34.8 9.12"><use href="#logo-g"/></svg></span>
+          <span class="engr">230V~ L Q2 Q1</span>
+        </div>
+        <div>
+          <h3 id="r2-h" class="label">Losos R2</h3>
+          <dl class="spec">
+            <dt data-i18n="seg">Segmenty</dt><dd>1</dd>
+            <dt data-i18n="out">Wyjścia przekaźnikowe</dt><dd>2</dd>
+            <dt data-i18n="rating">Obciążalność wyjścia</dt><dd>6 A / 250 V AC</dd>
+            <dt data-i18n="sum">Suma Q1 + Q2</dt><dd data-i18n="sum_v">maks. 6 A</dd>
+            <dt data-i18n="line">Faza L</dt><dd data-i18n="line_r2">wspólna</dd>
+            <dt data-i18n="dev">Urządzenia Tree</dt><dd>1</dd>
+            <dt data-i18n="width">Szerokość</dt><dd data-i18n="width_v">2M · 35,6 mm</dd>
+          </dl>
+        </div>
+      </article>
+      <article class="model" aria-labelledby="r4-h">
+        <div class="front" aria-hidden="true">
+          <span class="engr">Q1 Q2 L 230V~ · L H G +</span>
+          <span class="name">R4</span>
+          <span class="led a"></span><span class="led b"></span>
+          <span class="logo"><svg viewBox="-17.4 -4.56 34.8 9.12"><use href="#logo-g"/></svg></span>
+          <span class="engr">230V~ L Q2 Q1</span>
+        </div>
+        <div>
+          <h3 id="r4-h" class="label">Losos R4</h3>
+          <dl class="spec">
+            <dt data-i18n="seg">Segmenty</dt><dd>2</dd>
+            <dt data-i18n="out">Wyjścia przekaźnikowe</dt><dd>4 (2 × 2)</dd>
+            <dt data-i18n="rating">Obciążalność wyjścia</dt><dd>6 A / 250 V AC</dd>
+            <dt data-i18n="sum_seg">Suma Q1 + Q2 na segment</dt><dd data-i18n="sum_v">maks. 6 A</dd>
+            <dt data-i18n="line">Faza L</dt><dd data-i18n="line_r4">osobna dla segmentu</dd>
+            <dt data-i18n="dev">Urządzenia Tree</dt><dd>2</dd>
+            <dt data-i18n="width">Szerokość</dt><dd data-i18n="width_v">2M · 35,6 mm</dd>
+          </dl>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="inside-h">
+    <div class="inside">
+      <figure>
+        <img src="media/losos-plytki.jpg" width="1280" height="720" loading="lazy"
+             alt="Dwie zmontowane płytki modułu Losos R4 z przekaźnikami i złączami" data-i18n-alt="img_pcb">
+      </figure>
+      <div class="text">
+        <h2 id="inside-h" data-i18n="inside_h">W środku dwie płytki w kanapce</h2>
+        <p data-i18n="inside_p1">R4 to dwa segmenty jeden nad drugim, połączone złączem 2 × 4. R2 ma jeden segment w tej samej obudowie. Każdy segment ma własny mikrokontroler, przekaźniki i numer seryjny.</p>
+        <p data-i18n="inside_p2">Dla Miniservera każdy segment jest osobnym urządzeniem Tree z dwoma wyjściami, więc R4 widzisz w konfiguracji jako dwa urządzenia.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="feat-h">
+    <h2 id="feat-h" data-i18n="feat_h">Co potrafi</h2>
+    <dl class="features">
+      <div class="feature"><dt data-i18n="f1_t">Szyna TS35, szerokość 2M</dt><dd data-i18n="f1_d">35,6 mm na szynie. Zaciski 230 V i magistrali są na krawędziach obudowy, front zostaje czysty.</dd></div>
+      <div class="feature"><dt data-i18n="f2_t">Zasilanie z magistrali</dt><dd data-i18n="f2_d">24 V DC z przewodu Tree. Zacisk magistrali ma wejście i wyjście, więc kolejne moduły łączysz przewodem.</dd></div>
+      <div class="feature"><dt data-i18n="f3_t">Wyjścia 6 A</dt><dd data-i18n="f3_d">Styki zwierne 6 A / 250 V AC. Q1 i Q2 segmentu mają wspólne L, więc razem przewodzą do 6 A.</dd></div>
+      <div class="feature"><dt data-i18n="f4_t">Pomiar prądu</dt><dd data-i18n="f4_d">Izolowany czujnik na wspólnym L każdego segmentu. W trybie rolet wykrywa krańcówki.</dd></div>
+      <div class="feature"><dt data-i18n="f5_t">Dioda statusu</dt><dd data-i18n="f5_d">Każdy segment ma na froncie dwukolorową diodę, która pokazuje stan pracy.</dd></div>
+      <div class="feature"><dt data-i18n="f6_t">Panel serwisowy w przeglądarce</dt><dd data-i18n="f6_d">Lista modułów na gałęzi, diagnostyka i aktualizacja oprogramowania przez adapter USB‑CAN.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap block">
+    <figure class="rail">
+      <img src="media/losos-szyna.jpg" width="1600" height="900" loading="lazy"
+           alt="Moduły Losos R4, R2 i R4 obok siebie na szynie DIN, diody statusu świecą na zielono" data-i18n-alt="img_rail">
+      <figcaption data-i18n="rail_c">R4, R2 i R4 na jednej szynie: pięć urządzeń Tree, dziesięć wyjść, 10,7 cm szerokości.</figcaption>
+    </figure>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p data-i18n="tm">Losos nie jest produktem Loxone ani nie jest powiązany z Loxone Electronics GmbH. Loxone, Miniserver i Tree są znakami towarowymi Loxone Electronics GmbH i występują tu wyłącznie w celu opisania zgodności.</p>
+    <p>© 2026 Losos</p>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><g id="logo-g" fill="none" stroke="currentColor" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="-13.68,0 -10.62,-3.06 -5.86,-3.06 -2.8,0 -5.86,3.06 -10.62,3.06"/><polygon points="-13.68,0 -16.4,-2.38 -16.4,2.38"/><polyline points="-9.26,-2.04 -10.28,2.04"/><polyline points="-7.56,-2.04 -8.58,2.04"/><circle cx="-5.01" cy="-0.68" r="0.8"/><polygon points="2.4,-2 3.4,-2 4.4,-1 4.4,1 3.4,2 2.4,2 1.4,1 1.4,-1"/><polygon points="10.4,-2 11.4,-2 12.4,-1 12.4,1 11.4,2 10.4,2 9.4,1 9.4,-1"/><polyline points="-0.6,-3.6 -0.6,1 0.4,2"/><polyline points="8.4,-2 6.4,-2 5.4,-1 6.4,0 7.4,0 8.4,1 7.4,2 5.4,2"/><polyline points="16.4,-2 14.4,-2 13.4,-1 14.4,0 15.4,0 16.4,1 15.4,2 13.4,2"/></g></defs></svg>
+
+<script>
+(function () {
+  var T = {
+    pl: {
+      title: 'Losos',
+      desc: 'Losos R2 i R4 — moduły przekaźnikowe 6 A na szynę DIN, zgodne z Loxone Tree. Wkrótce w sprzedaży.',
+      video: 'Losos R4: montaż płytek, wpięcie na szynę DIN i sterowanie żarówkami',
+      eyebrow: 'Wkrótce w sprzedaży',
+      h1: 'Moduły przekaźnikowe na szynę DIN, zgodne z Loxone Tree',
+      lead: 'Losos R2 i R4 to wyjścia przekaźnikowe 6 A w obudowie szerokiej na dwa moduły. Wpinasz moduł na szynę, łączysz przewodem z magistralą Tree, a w Loxone Config pojawia się jak każde urządzenie Tree.',
+      models_h: 'Dwa modele, ta sama obudowa',
+      seg: 'Segmenty', out: 'Wyjścia przekaźnikowe', rating: 'Obciążalność wyjścia', sum: 'Suma Q1 + Q2',
+      sum_seg: 'Suma Q1 + Q2 na segment', sum_v: 'maks. 6 A', line: 'Faza L', dev: 'Urządzenia Tree', width: 'Szerokość',
+      line_r2: 'wspólna', line_r4: 'osobna dla segmentu', width_v: '2M · 35,6 mm',
+      inside_h: 'W środku dwie płytki w kanapce',
+      inside_p1: 'R4 to dwa segmenty jeden nad drugim, połączone złączem 2 × 4. R2 ma jeden segment w tej samej obudowie. Każdy segment ma własny mikrokontroler, przekaźniki i numer seryjny.',
+      inside_p2: 'Dla Miniservera każdy segment jest osobnym urządzeniem Tree z dwoma wyjściami, więc R4 widzisz w konfiguracji jako dwa urządzenia.',
+      img_pcb: 'Dwie zmontowane płytki modułu Losos R4 z przekaźnikami i złączami',
+      feat_h: 'Co potrafi',
+      f1_t: 'Szyna TS35, szerokość 2M', f1_d: '35,6 mm na szynie. Zaciski 230 V i magistrali są na krawędziach obudowy, front zostaje czysty.',
+      f2_t: 'Zasilanie z magistrali', f2_d: '24 V DC z przewodu Tree. Zacisk magistrali ma wejście i wyjście, więc kolejne moduły łączysz przewodem.',
+      f3_t: 'Wyjścia 6 A', f3_d: 'Styki zwierne 6 A / 250 V AC. Q1 i Q2 segmentu mają wspólne L, więc razem przewodzą do 6 A.',
+      f4_t: 'Pomiar prądu', f4_d: 'Izolowany czujnik na wspólnym L każdego segmentu. W trybie rolet wykrywa krańcówki.',
+      f5_t: 'Dioda statusu', f5_d: 'Każdy segment ma na froncie dwukolorową diodę, która pokazuje stan pracy.',
+      f6_t: 'Panel serwisowy w przeglądarce', f6_d: 'Lista modułów na gałęzi, diagnostyka i aktualizacja oprogramowania przez adapter USB‑CAN.',
+      img_rail: 'Moduły Losos R4, R2 i R4 obok siebie na szynie DIN, diody statusu świecą na zielono',
+      rail_c: 'R4, R2 i R4 na jednej szynie: pięć urządzeń Tree, dziesięć wyjść, 10,7 cm szerokości.',
+      tm: 'Losos nie jest produktem Loxone ani nie jest powiązany z Loxone Electronics GmbH. Loxone, Miniserver i Tree są znakami towarowymi Loxone Electronics GmbH i występują tu wyłącznie w celu opisania zgodności.'
+    },
+    en: {
+      title: 'Losos',
+      desc: 'Losos R2 and R4: 6 A DIN-rail relay modules compatible with Loxone Tree. Coming soon.',
+      video: 'Losos R4: boards assembled, module snapped onto a DIN rail and switching light bulbs',
+      eyebrow: 'Coming soon',
+      h1: 'DIN-rail relay modules compatible with Loxone Tree',
+      lead: 'Losos R2 and R4 are 6 A relay outputs in a two-module-wide housing. Snap the module onto the rail, wire it to the Tree bus, and it shows up in Loxone Config like any other Tree device.',
+      models_h: 'Two models, one housing',
+      seg: 'Segments', out: 'Relay outputs', rating: 'Output rating', sum: 'Q1 + Q2 total',
+      sum_seg: 'Q1 + Q2 total per segment', sum_v: 'max. 6 A', line: 'Line (L)', dev: 'Tree devices', width: 'Width',
+      line_r2: 'shared', line_r4: 'one per segment', width_v: '2M · 35.6 mm',
+      inside_h: 'Two stacked boards inside',
+      inside_p1: 'R4 is two segments stacked on top of each other and joined by a 2 × 4 connector. R2 has a single segment in the same housing. Each segment has its own microcontroller, relays and serial number.',
+      inside_p2: 'The Miniserver sees every segment as a separate Tree device with two outputs, so an R4 appears as two devices in your configuration.',
+      img_pcb: 'Two assembled Losos R4 boards with relays and connectors',
+      feat_h: 'What it does',
+      f1_t: 'TS35 rail, 2M wide', f1_d: '35.6 mm on the rail. The 230 V and bus terminals sit on the housing edges, so the front stays clean.',
+      f2_t: 'Powered by the bus', f2_d: '24 V DC from the Tree cable. The bus terminal has an input and an output, so you daisy-chain the next module with a wire.',
+      f3_t: '6 A outputs', f3_d: 'Normally open 6 A / 250 V AC contacts. Q1 and Q2 of a segment share L, so together they carry up to 6 A.',
+      f4_t: 'Current sensing', f4_d: 'An isolated sensor on the shared L of each segment. In blinds mode it detects the end positions.',
+      f5_t: 'Status LED', f5_d: 'Every segment has a two-colour LED on the front that shows its operating state.',
+      f6_t: 'Service panel in the browser', f6_d: 'List of modules on the branch, diagnostics and firmware updates over a USB‑CAN adapter.',
+      img_rail: 'Losos R4, R2 and R4 modules side by side on a DIN rail, status LEDs lit green',
+      rail_c: 'R4, R2 and R4 on one rail: five Tree devices, ten outputs, 10.7 cm wide.',
+      tm: 'Losos is not a Loxone product and is not affiliated with Loxone Electronics GmbH. Loxone, Miniserver and Tree are trademarks of Loxone Electronics GmbH and are used here only to describe compatibility.'
+    }
+  };
+
+  function apply(lang) {
+    var t = T[lang]; if (!t) return;
+    document.documentElement.lang = lang;
+    document.title = t.title;
+    var d = document.querySelector('meta[name="description"]'); if (d) d.setAttribute('content', t.desc);
+    document.querySelectorAll('[data-i18n]').forEach(function (el) { el.textContent = t[el.getAttribute('data-i18n')]; });
+    document.querySelectorAll('[data-i18n-alt]').forEach(function (el) { el.alt = t[el.getAttribute('data-i18n-alt')]; });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (el) { el.setAttribute('aria-label', t[el.getAttribute('data-i18n-aria')]); });
+    document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem('losos-lang'); } catch (e) {}
+  var nav = (navigator.languages && navigator.languages[0]) || navigator.language || 'pl';
+  apply(saved || (/^pl\b/i.test(nav) ? 'pl' : 'en'));
+
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      apply(b.dataset.lang);
+      try { localStorage.setItem('losos-lang', b.dataset.lang); } catch (e) {}
+    });
+  });
+
+  // ograniczenie ruchu w systemie: filmik nie gra sam, zostaje plakat i kontrolki
+  var v = document.getElementById('promo');
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (v && mq && mq.matches) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; }
+})();
+</script>
+</body>
+</html>
