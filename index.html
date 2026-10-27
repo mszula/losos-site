@@ -6,25 +6,29 @@
 <title>Losos</title>
 <meta name="description" content="Losos. Wkrótce.">
 <meta name="theme-color" content="#141416">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-17.2 -4 15.2 8'%3E%3Cg fill='none' stroke='%23F7785C' stroke-width='0.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='-13.68,0 -10.62,-3.06 -5.86,-3.06 -2.8,0 -5.86,3.06 -10.62,3.06'/%3E%3Cpolygon points='-13.68,0 -16.4,-2.38 -16.4,2.38'/%3E%3Cpolyline points='-9.26,-2.04 -10.28,2.04'/%3E%3Cpolyline points='-7.56,-2.04 -8.58,2.04'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-7.383 -7.383 14.766 14.766'%3E%3Cg fill='none' stroke='%23F7785C' stroke-width='0.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='-5.967' cy='2.6' r='0.558' stroke-width='1.116'/%3E%3Cpolyline points='-5.572,2.205 -0.767,-2.6 4.033,-2.6 6.633,0 4.033,2.6 -0.767,2.6 -2.412,0.955'/%3E%3Cpolyline points='-4.322,-0.955 -5.572,-2.205'/%3E%3Ccircle cx='-5.967' cy='-2.6' r='0.558' stroke-width='1.116'/%3E%3Ccircle cx='2.701' cy='-0.75' r='0.45' stroke-width='0.9'/%3E%3C/g%3E%3C/svg%3E">
 <style>
-/* Wersja „tajemnicza”: czarny ekran, logo rysuje się jak ścieżka na płytce (jak COMING SOON w filmiku), potem
-   schodzi pod kadr jako podpis, a filmik wyłania się z ciemności na cały ekran. Żadnego innego tekstu.
-   Tylko ciemny motyw — krawędzie filmiku są w Czerni i muszą zlewać się z tłem. Kolory: docs/brand/kolory.md. */
+/* Wersja „tajemnicza”: czarny ekran, logo rysuje się jak ścieżka na płytce (jak COMING SOON w filmiku), schodzi pod
+   kadr jako podpis i z ciemności wyłania się filmik. Niżej sylwetki produktów: każda wyłania się z ciemności, gdy
+   wjedzie w kadr, a jej nazwa rysuje się tym samym krojem co napis w filmiku. Żadnego innego tekstu.
+   Tylko ciemny motyw — krawędzie filmiku i zdjęć są w Czerni i muszą zlewać się z tłem. Kolory: docs/brand/kolory.md. */
 :root {
   color-scheme: dark;
   --czern: #141416;
   --losos: #F7785C;
+  --ikra: #FFE3D8;
   --glow: rgba(247, 120, 92, 0.75);
   --t-draw: 1.7s;        /* rysowanie logo */
   --t-move: 1.3s;        /* zejście logo i wejście filmiku */
 }
-html, body { height: 100%; margin: 0; background: var(--czern); overflow: hidden; }
+html { background: var(--czern); }
+body { margin: 0; background: var(--czern); color: var(--losos); overflow-x: hidden; }
+body.intro { overflow: hidden; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* filmik: cały ekran bez kadrowania (krawędzie zlewają się z tłem); na pionowym ekranie powiększony, żeby rząd
-   modułów i napis nie były malutkie */
-.stage { position: fixed; inset: 0; opacity: 0; transition: opacity var(--t-move) ease; }
+/* hero: filmik na cały ekran bez kadrowania (krawędzie zlewają się z tłem); na pionowym ekranie powiększony */
+.hero { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
+.stage { position: absolute; inset: 0; opacity: 0; transition: opacity var(--t-move) ease; }
 .stage.on { opacity: 1; }
 .stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--czern); }
 @media (orientation: portrait) {
@@ -33,56 +37,206 @@ html, body { height: 100%; margin: 0; background: var(--czern); overflow: hidden
 
 /* logo: najpierw duże na środku, potem podpis pod kadrem */
 .logo {
-  position: fixed; left: 50%; top: 50%; width: min(64vw, 520px); color: var(--losos);
+  position: absolute; left: 50%; top: 50%; width: min(64vw, 520px); color: var(--losos);
   transform: translate(-50%, -50%);
   transition: top var(--t-move) cubic-bezier(.65, 0, .35, 1), width var(--t-move) cubic-bezier(.65, 0, .35, 1),
               transform var(--t-move) cubic-bezier(.65, 0, .35, 1), opacity var(--t-move) ease;
 }
 .logo svg { display: block; width: 100%; height: auto; overflow: visible; }
-.logo.docked { top: calc(100% - 30px - env(safe-area-inset-bottom, 0px)); width: 112px; transform: translate(-50%, -100%); opacity: 0.9; }
+.logo.docked { top: calc(100% - 46px - env(safe-area-inset-bottom, 0px)); width: 112px; transform: translate(-50%, -100%); opacity: 0.9; }
 @media (orientation: portrait) {
   .logo.docked { top: calc(50% + 42.2vw + 56px); }    /* tuż pod kadrem: 150vw × 9/16 / 2 = 42,2vw */
 }
+
+/* pod podpisem: krótka ścieżka w dół, po której co chwilę przebiega sygnał (zachęta do przewinięcia) */
+.cue { position: absolute; left: 50%; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); width: 10px; height: 26px;
+       margin-left: -5px; opacity: 0; transition: opacity 1s ease 1.2s; }
+.cue.on { opacity: 0.55; }
+.cue svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.cue .sig { stroke: var(--ikra); stroke-dasharray: 4 40; animation: sig 2.6s cubic-bezier(.5, 0, .5, 1) infinite; }
+@keyframes sig { from { stroke-dashoffset: 4; } to { stroke-dashoffset: -26; } }
+
+/* sylwetki produktów */
+.line { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 12vh, 140px) 16px 40px;
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 6vw, 72px) clamp(16px, 4vw, 48px); }
+.p { margin: 0; }
+.shot { position: relative; aspect-ratio: 4 / 3; }
+.shot img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0;
+            filter: brightness(0.15) contrast(1.1);
+            -webkit-mask-image: linear-gradient(100deg, #000 40%, transparent 60%); mask-image: linear-gradient(100deg, #000 40%, transparent 60%);
+            -webkit-mask-size: 260% 100%; mask-size: 260% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0;
+            transition: opacity 0.9s ease, filter 2.4s cubic-bezier(.3, 0, .2, 1) 0.2s,
+                        -webkit-mask-position 1.9s cubic-bezier(.6, 0, .3, 1), mask-position 1.9s cubic-bezier(.6, 0, .3, 1); }
+.p.on .shot img { opacity: 1; filter: none; -webkit-mask-position: 0 0; mask-position: 0 0; }
+.name { display: block; height: clamp(18px, 2.2vw, 26px); margin: 14px auto 0; overflow: visible; }
+.name polyline { fill: none; stroke: var(--losos); stroke-linecap: round; stroke-linejoin: round; }
+.p.on .name { filter: drop-shadow(0 0 5px var(--glow)); transition: filter 2s ease 1.4s; }
+
+footer { padding: 48px 16px calc(40px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: center; }
+footer svg { width: 28px; height: 28px; opacity: 0.6; }
+
+@media (max-width: 640px) {
+  .line { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shot img { opacity: 1; filter: none; -webkit-mask-image: none; mask-image: none; transition: none; }
+  .cue .sig { animation: none; }
+}
 </style>
 </head>
-<body>
+<body class="intro">
 <h1 class="sr">Losos</h1>
 
-<div class="stage" id="stage">
-  <video id="promo" autoplay muted loop playsinline preload="auto" poster="media/losos-promo-poster.jpg"
-         aria-label="Losos R4">
-    <source src="media/losos-promo.webm" type="video/webm">
-    <source src="media/losos-promo.mp4" type="video/mp4">
-  </video>
-</div>
+<section class="hero">
+  <div class="stage" id="stage">
+    <video id="promo" autoplay muted loop playsinline preload="auto" poster="media/losos-promo-poster.jpg"
+           aria-label="Losos">
+      <source src="media/losos-promo.webm" type="video/webm">
+      <source src="media/losos-promo.mp4" type="video/mp4">
+    </video>
+  </div>
 
-<div class="logo" id="logo" aria-hidden="true">
-  <svg viewBox="-17.4 -4.56 34.8 9.12"><g fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
-    <polygon points="-13.68,0 -10.62,-3.06 -5.86,-3.06 -2.8,0 -5.86,3.06 -10.62,3.06"/>
-    <polygon points="-13.68,0 -16.4,-2.38 -16.4,2.38"/>
-    <polyline points="-9.26,-2.04 -10.28,2.04"/>
-    <polyline points="-7.56,-2.04 -8.58,2.04"/>
-    <circle cx="-5.01" cy="-0.68" r="0.8"/>
-    <polyline points="-0.6,-3.6 -0.6,1 0.4,2"/>
-    <polygon points="2.4,-2 3.4,-2 4.4,-1 4.4,1 3.4,2 2.4,2 1.4,1 1.4,-1"/>
-    <polyline points="8.4,-2 6.4,-2 5.4,-1 6.4,0 7.4,0 8.4,1 7.4,2 5.4,2"/>
-    <polygon points="10.4,-2 11.4,-2 12.4,-1 12.4,1 11.4,2 10.4,2 9.4,1 9.4,-1"/>
-    <polyline points="16.4,-2 14.4,-2 13.4,-1 14.4,0 15.4,0 16.4,1 15.4,2 13.4,2"/>
+  <div class="logo" id="logo" aria-hidden="true">
+    <svg viewBox="-17.035 -4.15 34.07 7.67"><g fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="-16.115" cy="2.6" r="0.41" stroke-width="0.42"/>
+      <polyline points="-15.797,2.282 -10.915,-2.6 -6.115,-2.6 -3.515,0 -6.115,2.6 -10.915,2.6 -12.985,0.53"/>
+      <polyline points="-14.045,-0.53 -15.797,-2.282"/>
+      <circle cx="-16.115" cy="-2.6" r="0.41" stroke-width="0.42"/>
+      <circle cx="-6.033" cy="-0.75" r="0.25" stroke-width="0.5"/>
+      <polyline points="-0.515,-3.6 -0.515,1 0.485,2"/>
+      <polygon points="2.485,-2 3.485,-2 4.485,-1 4.485,1 3.485,2 2.485,2 1.485,1 1.485,-1"/>
+      <polyline points="8.485,-2 6.485,-2 5.485,-1 6.485,0 7.485,0 8.485,1 7.485,2 5.485,2"/>
+      <polygon points="10.485,-2 11.485,-2 12.485,-1 12.485,1 11.485,2 10.485,2 9.485,1 9.485,-1"/>
+      <polyline points="16.485,-2 14.485,-2 13.485,-1 14.485,0 15.485,0 16.485,1 15.485,2 13.485,2"/>
+    </g></svg>
+  </div>
+
+  <div class="cue" id="cue" aria-hidden="true">
+    <svg viewBox="0 0 10 26"><g fill="none" stroke-linecap="round" stroke-width="1.4">
+      <path d="M5 0 V20" stroke="#F7785C"/><path class="sig" d="M5 0 V20"/>
+      <circle cx="5" cy="23" r="2" stroke="#F7785C"/>
+    </g></svg>
+  </div>
+</section>
+
+<main class="line" id="line">
+  <figure class="p" data-name="R4"><div class="shot"><img src="media/losos-r4.jpg" alt="Losos R4" loading="lazy" width="1200" height="900"></div></figure>
+  <figure class="p" data-name="R2"><div class="shot"><img src="media/losos-r2.jpg" alt="Losos R2" loading="lazy" width="1200" height="900"></div></figure>
+  <figure class="p" data-name="DI20"><div class="shot"><img src="media/losos-di20.jpg" alt="Losos DI20" loading="lazy" width="1200" height="900"></div></figure>
+  <figure class="p" data-name="DO14"><div class="shot"><img src="media/losos-do14.jpg" alt="Losos DO14" loading="lazy" width="1200" height="900"></div></figure>
+  <figure class="p" data-name="FISHBONE"><div class="shot"><img src="media/losos-fishbone.jpg" alt="Losos Fishbone" loading="lazy" width="1200" height="900"></div></figure>
+  <figure class="p" data-name="T5"><div class="shot"><img src="media/losos-t5.jpg" alt="Losos T5" loading="lazy" width="1200" height="900"></div></figure>
+</main>
+
+<footer aria-hidden="true">
+  <svg viewBox="-7.383 -7.383 14.766 14.766"><g fill="none" stroke="#F7785C" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="-5.967" cy="2.6" r="0.558" stroke-width="1.116"/>
+    <polyline points="-5.572,2.205 -0.767,-2.6 4.033,-2.6 6.633,0 4.033,2.6 -0.767,2.6 -2.412,0.955"/>
+    <polyline points="-4.322,-0.955 -5.572,-2.205"/>
+    <circle cx="-5.967" cy="-2.6" r="0.558" stroke-width="1.116"/>
+    <circle cx="2.701" cy="-0.75" r="0.45" stroke-width="0.9"/>
   </g></svg>
-</div>
+</footer>
 
-<noscript><style>.stage { opacity: 1; } .logo { top: calc(100% - 30px); width: 112px; transform: translate(-50%, -100%); }</style></noscript>
+<noscript><style>
+  body.intro { overflow: auto; }
+  .stage, .cue { opacity: 1; }
+  .logo { top: calc(100% - 46px); width: 112px; transform: translate(-50%, -100%); }
+  .shot img { opacity: 1; filter: none; -webkit-mask-image: none; mask-image: none; }
+</style></noscript>
 
 <script>
 (function () {
   var stage = document.getElementById('stage'), logo = document.getElementById('logo'), v = document.getElementById('promo');
+  var cue = document.getElementById('cue');
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var svg = logo.querySelector('svg'), parts = Array.prototype.slice.call(svg.querySelectorAll('polygon, polyline, circle'));
+  var NS = 'http://www.w3.org/2000/svg';
 
+  // --- nazwy produktów krojem logotypu: monolinia, fazy 45°, okrągłe końce (jak title.py i grawer tabliczki,
+  //     glyph() w products/shared/enclosure/losos_enclosure.py); x w prawo, y w górę, linia bazowa y = 0
+  function glyph(ch, h) {
+    var w = 0.62 * h, c = 0.3 * w, cs = h / 4;
+    var oct = [[c, 0], [w - c, 0], [w, c], [w, h - c], [w - c, h], [c, h], [0, h - c], [0, c], [c, 0]];
+    switch (ch) {
+      case ' ': return [0.55 * h, []];
+      case 'I': var wi = 0.36 * h; return [wi, [[[0, 0], [wi, 0]], [[wi / 2, 0], [wi / 2, h]], [[0, h], [wi, h]]]];
+      case '1': var w1 = 0.35 * h; return [w1, [[[0, h - 0.8 * w1], [w1, h], [w1, 0]]]];
+    }
+    var g = {
+      '0': [oct], 'O': [oct],
+      '2': [[[0, h - c], [c, h], [w - c, h], [w, h - c], [w, 0.62 * h], [0, 0], [w, 0]]],
+      '4': [[[0.72 * w, 0], [0.72 * w, h], [0, 0.32 * h], [w, 0.32 * h]]],
+      '5': [[[w, h], [0, h], [0, 0.56 * h], [w - c, 0.56 * h], [w, 0.56 * h - c], [w, c], [w - c, 0], [0, 0]]],
+      'R': [[[0, 0], [0, h], [w - c, h], [w, h - c], [w, h / 2 + c], [w - c, h / 2], [0, h / 2]], [[0.45 * w, h / 2], [w, 0]]],
+      'D': [[[0, 0], [0, h], [w - c, h], [w, h - c], [w, c], [w - c, 0], [0, 0]]],
+      'B': [[[0, 0], [0, h], [w - c, h], [w, h - c], [w, h / 2 + c], [w - c, h / 2], [0, h / 2]],
+            [[w - c, h / 2], [w, h / 2 - c], [w, c], [w - c, 0], [0, 0]]],
+      'F': [[[w, h], [0, h], [0, 0]], [[0, h / 2], [0.8 * w, h / 2]]],
+      'E': [[[w, h], [0, h], [0, 0], [w, 0]], [[0, h / 2], [0.8 * w, h / 2]]],
+      'H': [[[0, 0], [0, h]], [[w, 0], [w, h]], [[0, h / 2], [w, h / 2]]],
+      'L': [[[0, h], [0, 0], [w, 0]]],
+      'N': [[[0, 0], [0, h], [w, 0], [w, h]]],
+      'T': [[[0, h], [w, h]], [[w / 2, h], [w / 2, 0]]],
+      'S': [[[w, h], [cs, h], [0, h - cs], [cs, h / 2], [w - cs, h / 2], [w, h / 2 - cs], [w - cs, 0], [0, 0]]]
+    };
+    return [w, g[ch]];
+  }
+
+  function nameSvg(text) {
+    var h = 10, gap = 0.5 * h, sw = h / 8.5, x = 0, lines = [];
+    text.split('').forEach(function (ch, i) {
+      var gw = glyph(ch, h);
+      gw[1].forEach(function (ln) { lines.push(ln.map(function (p) { return [x + p[0], h - p[1]]; })); });
+      x += gw[0] + (i < text.length - 1 ? gap : 0);
+    });
+    var s = document.createElementNS(NS, 'svg'), pad = sw;
+    s.setAttribute('viewBox', [-pad, -pad, x + 2 * pad, h + 2 * pad].join(' '));
+    s.setAttribute('class', 'name'); s.setAttribute('aria-hidden', 'true');
+    s.style.aspectRatio = (x + 2 * pad) + ' / ' + (h + 2 * pad);
+    lines.forEach(function (ln) {
+      var pl = document.createElementNS(NS, 'polyline');
+      pl.setAttribute('points', ln.map(function (p) { return p[0].toFixed(3) + ',' + p[1].toFixed(3); }).join(' '));
+      pl.setAttribute('stroke-width', sw.toFixed(3));
+      s.appendChild(pl);
+    });
+    return s;
+  }
+
+  function drawName(s, delay) {                       // kreska po kresce, jak prowadzona ścieżka
+    var pls = s.querySelectorAll('polyline'), step = 110;
+    Array.prototype.forEach.call(pls, function (pl, i) {
+      var len = pl.getTotalLength();
+      pl.style.strokeDasharray = len; pl.style.strokeDashoffset = len;
+      if (reduce || !pl.animate) { pl.style.strokeDashoffset = 0; return; }
+      pl.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+                 { duration: 420, delay: delay + i * step, easing: 'cubic-bezier(.5, 0, .2, 1)', fill: 'forwards' });
+    });
+  }
+
+  var figs = Array.prototype.slice.call(document.querySelectorAll('.p'));
+  figs.forEach(function (f) { f.appendChild(nameSvg(f.getAttribute('data-name'))); });
+
+  function show(f) {
+    if (f.classList.contains('on')) return;
+    f.classList.add('on');
+    drawName(f.querySelector('.name'), 700);
+  }
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.35 });
+    figs.forEach(function (f) { io.observe(f); });
+  } else {
+    figs.forEach(show);
+  }
+
+  // --- intro: logo -> podpis -> filmik
   function reveal() {
     logo.classList.add('docked');
     setTimeout(function () {                          // filmik dopiero, gdy logo zjedzie z kadru
-      stage.classList.add('on');
+      stage.classList.add('on'); cue.classList.add('on');
+      document.body.classList.remove('intro');
       try { v.currentTime = 0; } catch (e) {}
       var p = v.play(); if (p && p.catch) p.catch(function () {});
     }, 400);
@@ -90,7 +244,8 @@ html, body { height: 100%; margin: 0; background: var(--czern); overflow: hidden
 
   if (reduce || !svg.animate) {                      // bez animacji: od razu podpis i plakat (ruch na żądanie)
     v.removeAttribute('autoplay'); v.pause(); v.controls = !!reduce;
-    logo.classList.add('docked'); stage.classList.add('on');
+    logo.classList.add('docked'); stage.classList.add('on'); cue.classList.add('on');
+    document.body.classList.remove('intro');
     if (!reduce) { var q = v.play(); if (q && q.catch) q.catch(function () {}); }
     return;
   }
