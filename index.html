@@ -60,6 +60,7 @@ body.intro { overflow: hidden; }
 .line { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 12vh, 140px) 16px 40px;
         display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 6vw, 72px) clamp(16px, 4vw, 48px); }
 .p { margin: 0; }
+.p:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - clamp(16px, 4vw, 48px) / 2); }  /* nieparzysta liczba: ostatnia na środku */
 .shot { position: relative; aspect-ratio: 4 / 3; }
 .shot img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0;
             filter: brightness(0.15) contrast(1.1);
@@ -77,6 +78,7 @@ footer svg { width: 28px; height: 28px; opacity: 0.6; }
 
 @media (max-width: 640px) {
   .line { grid-template-columns: 1fr; }
+  .p:last-child:nth-child(odd) { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .shot img { opacity: 1; filter: none; -webkit-mask-image: none; mask-image: none; transition: none; }
@@ -125,7 +127,6 @@ footer svg { width: 28px; height: 28px; opacity: 0.6; }
   <figure class="p" data-name="DI20"><div class="shot"><img src="media/losos-di20.jpg" alt="Losos DI20" loading="lazy" width="1200" height="900"></div></figure>
   <figure class="p" data-name="DO14"><div class="shot"><img src="media/losos-do14.jpg" alt="Losos DO14" loading="lazy" width="1200" height="900"></div></figure>
   <figure class="p" data-name="FISHBONE"><div class="shot"><img src="media/losos-fishbone.jpg" alt="Losos Fishbone" loading="lazy" width="1200" height="900"></div></figure>
-  <figure class="p" data-name="T5"><div class="shot"><img src="media/losos-t5.jpg" alt="Losos T5" loading="lazy" width="1200" height="900"></div></figure>
 </main>
 
 <footer aria-hidden="true">
